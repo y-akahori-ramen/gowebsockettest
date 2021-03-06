@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 	"os"
@@ -61,6 +62,9 @@ func broadcast(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	var addr = flag.String("addr", "localhost:8080", "サーバーアドレス")
+	flag.Parse()
+
 	http.HandleFunc("/connect", connect)
 	http.HandleFunc("/broadcast", broadcast)
 
@@ -97,8 +101,8 @@ func main() {
 	}()
 
 	go func() {
-		srv := &http.Server{Addr: "localhost:8080"}
-		log.Println("サーバー起動します")
+		srv := &http.Server{Addr: *addr}
+		log.Println("サーバー起動します。サーバーアドレス:", *addr)
 		if err := srv.ListenAndServe(); err != nil {
 			log.Fatal(err)
 		}
